@@ -1,0 +1,27 @@
+﻿@page "{id}"
+@model WebApplicationRP.Pages.Students.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Age</td>
+            <td>Department</td>
+            <td>Operations</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Student.Name</td>
+            <td>@Model.Student.Age</td>
+            <td>@Model.Student.Department.Name</td>
+            <td>
+                <a class="btn btn-warning mr-2" asp-page="/students/edit" asp-route-id="@Model.Student.Id">Edit</a>
+                <a class="btn btn-danger mr-2" asp-page="/students/delete" asp-route-id="@Model.Student.Id">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<a class="btn btn-secondary" asp-page="/students/Index">Back</a>

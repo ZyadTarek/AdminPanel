@@ -1,0 +1,19 @@
+﻿@page
+@model WebApplicationRP.Pages.Students.CreateModel
+@{
+    ViewData["Title"] = "Add New Student";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <label asp-for="Student.Name"></label>
+            <input asp-for="Student.Name" class="form-control" />
+            <label asp-for="Student.Age"></label>
+            <input asp-for="Student.Age" class="form-control" />
+            <label asp-for="Student.Department"></label><br />
+            <select asp-for="Student.DeptNo" asp-items="ViewBag.items"></select><br /><br />
+            <input type="submit" value="Add Student" class="btn btn-success" />
+            <a asp-page="/Students/Index" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>

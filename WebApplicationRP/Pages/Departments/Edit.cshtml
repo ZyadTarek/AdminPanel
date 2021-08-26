@@ -1,0 +1,16 @@
+﻿@page "{id}"
+@model WebApplicationRP.Pages.Departments.EditModel
+@{
+    ViewData["Title"] = "Edit Department Info";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input asp-for="Department.Id" class="form-control" hidden />
+            <label asp-for="Department.Name"></label>
+            <input asp-for="Department.Name" class="form-control" /><br />
+            <input type="submit" value="Edit Student" class="btn btn-success" />
+            <a asp-page="/Students/Index" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿@page
+@model WebApplicationRP.Pages.Departments.CreateModel
+@{
+    ViewData["Title"] = "Add New Department";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <label asp-for="Department.Name"></label>
+            <input asp-for="Department.Name" /><br /><br />
+            <input type="submit" value="Add Department" class="btn btn-success mr-2" />
+            <a asp-page="/Departments/Index" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>

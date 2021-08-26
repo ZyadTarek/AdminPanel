@@ -1,0 +1,29 @@
+﻿@page
+@model WebApplicationRP.Pages.Departments.IndexModel
+@{
+    ViewData["Title"] = "Departments";
+}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>#Students</td>
+            <td>Operations</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Departments)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Students.Count</td>
+                <td>
+                    <a class="btn btn-info mr-2" asp-page="/departments/details" asp-route-id="@item.Id">Details</a>
+                    <a class="btn btn-warning mr-2" asp-page="/departments/edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-danger mr-2" asp-page="/departments/delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn btn-primary" asp-page="/departments/create">Create New</a>
