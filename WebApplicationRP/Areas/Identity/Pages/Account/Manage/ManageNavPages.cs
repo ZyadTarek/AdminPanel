@@ -13,6 +13,7 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account.Manage
         public static string Email => "Email";
 
         public static string ChangePassword => "ChangePassword";
+        public static string ChangePicture => "ChangePicture";
 
         public static string DownloadPersonalData => "DownloadPersonalData";
 
@@ -29,6 +30,7 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account.Manage
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+        public static string ChangePictureNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePicture);
 
         public static string DownloadPersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, DownloadPersonalData);
 

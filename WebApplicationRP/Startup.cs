@@ -32,6 +32,7 @@ namespace WebApplicationRP
 			{
 				options.UseSqlServer(Configuration.GetConnectionString("WebApplicationRPContextConnection"));
 			});
+
 			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddRoles<IdentityRole>().AddEntityFrameworkStores<WebApplicationRPContext>();
 
@@ -39,6 +40,20 @@ namespace WebApplicationRP
 			services.AddTransient<IDBOperations<Department>, DepartmentDB>();
 			services.AddRazorPages();
 		}
+		public string GetConfiguration(string configKey)
+		{
+			//try
+			//{
+				string connectionString = Configuration.GetConnectionString(configKey);
+				if(connectionString != null) return connectionString;
+			//}
+			//catch (Exception ex)
+			//{
+				//throw (ex);
+			//}
+			return "";
+		}
+		
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
