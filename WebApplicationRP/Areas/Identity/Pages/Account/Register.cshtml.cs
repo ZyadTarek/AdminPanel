@@ -11,8 +11,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using WebApplicationRP.Data;
+using WebApplicationRP.Models;
+using WebApplicationRP.Services;
 
 namespace WebApplicationRP.Areas.Identity.Pages.Account
 {
@@ -23,17 +27,24 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private IDBOperations<Department> _deptdb;
+        private WebApplicationRPContext _db;
+        public string RoleName { get; set; } = "User";
 
-        public RegisterModel(
+		public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IDBOperations<Department> deptdb,
+            WebApplicationRPContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _deptdb = deptdb;
+            _db = db;
         }
 
         [BindProperty]
@@ -42,10 +53,10 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         public class InputModel
         {
-            [Required]
+			public ApplicationUser User { get; set; }
+			[Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -64,8 +75,14 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/");
+            }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            SelectList s = new SelectList(_deptdb.GetAll(), "Id", "Name");
+            ViewData["items"] = s;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -74,8 +91,10 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var dept =  _db.Departments.FirstOrDefault(d => d.Id == Input.User.DeptNo);
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Age = Input.User.Age,DeptNo = dept.Id, Department = dept};
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                _db.SaveChanges();
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -91,6 +110,11 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                    //await _userManager.AddToRoleAsync(user, _db.Roles.Add(
+                    //    new IdentityRole {Id = "1", Name = "User" }));
+                    _db.UserRoles.Add(new IdentityUserRole<string> { UserId = user.Id, RoleId = "1" });
+                    _db.SaveChanges();
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -100,6 +124,8 @@ namespace WebApplicationRP.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
+
+               
                 }
                 foreach (var error in result.Errors)
                 {

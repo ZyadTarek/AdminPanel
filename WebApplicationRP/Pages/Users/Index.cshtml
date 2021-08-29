@@ -1,0 +1,76 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using WebApplicationRP.Data
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject WebApplicationRPContext db
+@model WebApplicationRP.Pages.Users.IndexModel
+@{
+    var claims = User.Claims.ToList();
+    //== "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    var currentUser = "";
+    foreach (var claim in claims)
+    {
+        if(claim.Type.EndsWith("emailaddress"))
+        {
+            currentUser = claim.Value;
+        }
+    }
+}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Age</td>
+            <td>Department</td>
+            <td>Operations</td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Admins.Count > 0)
+        {
+            @foreach (var item in Model.Admins)
+            {
+                <tr>
+                    <td>@item.UserName</td>
+                    <td>@item.Age</td>
+                    <td>@item.Department.Name</td>
+                    <td>
+                        @if (item.Email == currentUser && SignInManager.IsSignedIn(User))
+                        {
+                            <a id="removeAdmin" class="btn btn-danger disabled" asp-page="/Users/RemoveAdmin" asp-route-id="@item.Id">Remove Admin</a>
+                        }
+                        else
+                        {
+                            <a id="removeAdmin" class="btn btn-danger mr-2" asp-page="/Users/RemoveAdmin" asp-route-id="@item.Id">Remove Admin</a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        @if (Model.Users.Count > 0)
+        {
+            @foreach (var item in Model.Users)
+            {
+                <tr>
+                    <td>@item.UserName</td>
+                    <td>@item.Age</td>
+                    <td>@item.Department.Name</td>
+                    <td>
+                        <a id="addAdmin" class="btn btn-info mr-2" asp-page="/Users/AddAdmin" asp-route-id="@item.Id">Add Admin</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<script>
+    $(() => {
+        $('#addAdmin').click(() => {
+            location.reload();
+        });
+        $('#removeAdmin').click(() => {
+            location.reload();
+        });
+    })
+</script>

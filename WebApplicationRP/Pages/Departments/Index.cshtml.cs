@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApplicationRP.Models;
@@ -9,6 +10,7 @@ using WebApplicationRP.Services;
 
 namespace WebApplicationRP.Pages.Departments
 {
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
 		private IDBOperations<Department> _deptdb;

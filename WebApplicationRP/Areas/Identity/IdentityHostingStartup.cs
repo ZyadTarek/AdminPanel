@@ -19,8 +19,8 @@ namespace WebApplicationRP.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("WebApplicationRPContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<WebApplicationRPContext>();
+                //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                //    .AddEntityFrameworkStores<WebApplicationRPContext>();
             });
         }
     }
